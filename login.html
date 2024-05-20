@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+    * {
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    body {
+      background-image: url("/Main-background.svg");
+      background-color: #000000;
+      background-position: fixed;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+      color: #333;
+      font-style: normal;
+      text-align: left;
+    }
+
+    .glass-card-container {
+      width: 100%;
+      max-width: 700px;
+      margin: auto auto;
+      perspective: 800px;
+      margin-top: 120px;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      color: white;
+      text-align: center;
+      transition: all 0.3s ease-in-out;
+      transform-style: preserve-3d;
+      height: max-content;
+      width: 30vw;
+      margin: auto;
+    }
+    
+    .glass-card:hover {
+      box-shadow: 0 15px 45px 0 rgba(31, 38, 135, 0.5);
+      transform: rotateX(2deg) rotateY(-2deg);
+    }
+    
+    .glass-card h2 {
+      font-size: 2rem;
+    }
+    
+    .glass-card p {
+      font-size: 1.1rem;
+      margin: 0.5rem 0;
+    }
+
+    .mid {
+      text-align: center;
+    }
+
+    .container {
+      margin: 0 auto;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 90%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.5); /* Updated transparency here */
+      box-sizing: border-box;
+      background-color: rgba(255, 255, 255, 0.2); /* Updated transparency here */
+      color: white;
+    }
+
+    button {
+      width: 90%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      background-color: #3b82f6;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #2563eb;
+    }
+
+    .forgot-password a,
+    p {
+      text-align: center;
+      color: white;
+      text-decoration: none;
+    }
+
+    .forgot-password a:hover,
+    p a:hover {
+      text-decoration: underline;
+    }
+
+    
+
+  </style>
+</head>
+<body>
+  <div class="glass-card-container">
+    <div class="glass-card">
+      <div class="container">
+        <h2 class="mid">Login</h2>
+        <form id="loginForm">
+          <div class="input-group">
+            <label for="username">Username/Email:</label>
+            <input type="text" id="username" name="username" required>
+          </div>
+          <div class="input-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+          </div>
+          <br>
+          <button type="submit">Login</button>
+          <br>
+        </form>
+        <br>
+        <div class="forgot-password">
+          <a href="reset_password.html">Forgot Password?</a><br>
+        </div><br>
+        <div id="loginMessage" class="message"></div>
+        <p class="mid">Don't have an account? <a href="signup.html">Create one</a></p>
+      </div>
+    </div>
+  </div>
+  <script >
+    document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const username = this.username.value.trim();
+        const password = this.password.value.trim();
+        authenticateUser(username, password);
+    });
+});
+
+function authenticateUser(username, password) {
+    fetch('users.json')
+        .then(response => response.json())
+        .then(users => {
+            const user = users.find(user => user.username === username && user.password === password);
+            if (user) {
+                showMessage('loginMessage', 'success', 'Login successful!');
+                // Redirect to index.html after successful login
+                window.location.replace("index.html");
+            } else {
+                showMessage('loginMessage', 'error', 'Invalid username or password');
+            }
+        })
+        .catch(error => {
+            showMessage('loginMessage', 'error', 'An error occurred. Please try again later.');
+            console.error('Error:', error);
+        });
+}
+
+function showMessage(id, type, message) {
+    const messageDiv = document.getElementById(id);
+    messageDiv.textContent = message;
+    messageDiv.classList.remove('success', 'error');
+    messageDiv.classList.add(type);
+}
+
+  </script>
+</body>
+</html>
